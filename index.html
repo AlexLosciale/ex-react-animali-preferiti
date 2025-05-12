@@ -11,19 +11,74 @@
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
         <script type="text/babel">
-
-            const animals = ["Cane", "Gatto", "Coniglio", "Pappagallo", "Tartaruga"];
+            const { useState } = React;
+      
+            function Modal({ content, onConfirm, onCancel }) {
+              return (
+                <div className="modal-container">
+                  <div className="modal">
+                    {content}
+                    <div style={{ marginTop: "1rem", textAlign: "right" }}>
+                      <button onClick={onCancel}>Annulla</button>
+                      <button onClick={onConfirm} style={{ marginLeft: "0.5rem" }}>
+                        Conferma
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
       
             function ListaAnimali() {
+              const [animals, setAnimals] = useState([]);
+              const [showModal, setShowModal] = useState(false);
+              const [inputValue, setInputValue] = useState("");
+      
+              const handleAggiungiClick = () => {
+                setInputValue("");
+                setShowModal(true);
+              };
+      
+              const handleConfirm = () => {
+                if (inputValue.trim()) {
+                  setAnimals([...animals, inputValue.trim()]);
+                }
+                setShowModal(false);
+              };
+      
+              const handleCancel = () => {
+                setShowModal(false);
+              };
+      
               return (
-                <details>
-                  <summary>Animali</summary>
-                  <ul>
-                    {animals.map((animale, index) => (
-                      <li key={index}>{animale}</li>
-                    ))}
-                  </ul>
-                </details>
+                <div>
+                  <button onClick={handleAggiungiClick}>Aggiungi Animale</button>
+                  <details>
+                    <summary>Animali</summary>
+                    <ul>
+                      {animals.map((animale, index) => (
+                        <li key={index}>{animale}</li>
+                      ))}
+                    </ul>
+                  </details>
+      
+                  {showModal && (
+                    <Modal
+                      content={
+                        <div>
+                          <label>Nome animale: </label>
+                          <input
+                            type="text"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                          />
+                        </div>
+                      }
+                      onConfirm={handleConfirm}
+                      onCancel={handleCancel}
+                    />
+                  )}
+                </div>
               );
             }
       
@@ -32,7 +87,6 @@
               const root = ReactDOM.createRoot(container);
               root.render(<ListaAnimali />);
             };
-            
         </script>
 
     </head>
